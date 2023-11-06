@@ -175,37 +175,37 @@ function draw() {
 
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('mousemove', mouseMoveHandler, false);
+// タッチイベントリスナーを追加
+canvas.addEventListener('touchstart', touchStartHandler, false);
+canvas.addEventListener('touchmove', touchMoveHandler, false);
+canvas.addEventListener('touchend', touchEndHandler, false);
 
-let startTouchX;
 
 function touchStartHandler(e) {
-    if (e.touches.length == 1) {
-        // タッチ開始位置を記録
-        startTouchX = e.touches[0].pageX;
+    if(e.touches.length == 1){ // シングルタッチの場合
+        var touch = e.touches[0];
+        var touchX = touch.pageX - canvas.offsetLeft;
+        if (touchX > 0 && touchX < canvas.width) {
+            paddleX = touchX - paddleWidth / 2;
+        }
+        e.preventDefault(); // スクロールなどのデフォルトのタッチ操作を防ぐ
     }
 }
 
 function touchMoveHandler(e) {
-    if (e.touches.length == 1) {
+    if(e.touches.length == 1){ // シングルタッチの場合
         var touch = e.touches[0];
-        var touchX = touch.pageX;
-        var moveX = touchX - startTouchX; // 移動距離を計算
-
-        // 小さい移動であればパドルとして処理
-        if (Math.abs(moveX) < 10) {
-            var newPaddleX = touchX - canvas.offsetLeft - paddleWidth / 2;
-            if (newPaddleX > 0 && newPaddleX < canvas.width - paddleWidth) {
-                paddleX = newPaddleX;
-                e.preventDefault(); // スクロールを防止
-            }
-        } else {
-            // 大きい移動であればスクロールとして処理（何もしない）
+        var touchX = touch.pageX - canvas.offsetLeft;
+        if (touchX > 0 && touchX < canvas.width) {
+            paddleX = touchX - paddleWidth / 2;
         }
+        e.preventDefault(); // スクロールなどのデフォルトのタッチ操作を防ぐ
     }
 }
 
-canvas.addEventListener('touchstart', touchStartHandler, false);
-canvas.addEventListener('touchmove', touchMoveHandler, false);
+function touchEndHandler(e) {
+    // タッチ終了時の処理をここに追加
+}
 
 function keyDownHandler(e){
     if(e.key == 'Right' || e.key == 'ArrowRight'){
