@@ -176,6 +176,37 @@ function draw() {
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('mousemove', mouseMoveHandler, false);
 
+let startTouchX;
+
+function touchStartHandler(e) {
+    if (e.touches.length == 1) {
+        // タッチ開始位置を記録
+        startTouchX = e.touches[0].pageX;
+    }
+}
+
+function touchMoveHandler(e) {
+    if (e.touches.length == 1) {
+        var touch = e.touches[0];
+        var touchX = touch.pageX;
+        var moveX = touchX - startTouchX; // 移動距離を計算
+
+        // 小さい移動であればパドルとして処理
+        if (Math.abs(moveX) < 10) {
+            var newPaddleX = touchX - canvas.offsetLeft - paddleWidth / 2;
+            if (newPaddleX > 0 && newPaddleX < canvas.width - paddleWidth) {
+                paddleX = newPaddleX;
+                e.preventDefault(); // スクロールを防止
+            }
+        } else {
+            // 大きい移動であればスクロールとして処理（何もしない）
+        }
+    }
+}
+
+canvas.addEventListener('touchstart', touchStartHandler, false);
+canvas.addEventListener('touchmove', touchMoveHandler, false);
+
 function keyDownHandler(e){
     if(e.key == 'Right' || e.key == 'ArrowRight'){
         rightPressed = true;
